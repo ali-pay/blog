@@ -1,0 +1,34 @@
+---
+title: 糯大米的博客
+description:
+---
+<hr>
+<section class="content full">
+{{# posts_latest }}
+<div class="post">
+    <div class="post-content">
+        <h2><a href="{{url}}">{{title}}</a></h2>
+        <div class="meta"> <span class="date">{{ date }}</span> <span class="tags"><a href="#">tips</a>, <a href="#">tricks</a></span> <span class="comments"><a href="#">3 Comments</a></span> </div>
+        {{{ summary }}}
+        <a href="{{url}}" class="button red">Continue reading →</a>
+    </div>
+    <div class="clear"></div>
+</div>
+{{/ posts_latest }}
+</section>
+
+<!-- Begin Sidebar -->
+<aside class="sidebar">
+
+    <div class="sidebox widget">
+        <h3>Tags</h3>
+
+        <ul class="tag_box inline">
+        {{# tags }}
+          {{> tags_list }}
+        {{/ tags }}
+        </ul>
+    </div>
+
+</aside>
+<!-- End Sidebar -->

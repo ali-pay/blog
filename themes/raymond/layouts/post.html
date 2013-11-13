@@ -1,0 +1,65 @@
+---
+layout : default
+---
+<div class="page-intro clearfix">
+    <h1 class="page-title alignleft">{{ page.title }} {{# page.tagline }}
+        <small>{{ . }}</small>
+        {{/ page.tagline }}
+    </h1>
+    <div class="navigation alignright">
+        {{# page?previous }}
+        <a href="{{ url }}" title="{{ title }}"><i class='icon-left-open-1'></i></a>
+        {{/ page?previous }}
+        {{^ page?previous }}
+        {{/ page?previous }}
+
+        {{# page?next }}
+        <a href="{{ url }}" title="{{ title }}"><i class='icon-right-open-1'></i></a>
+        {{/ page?next }}
+        {{^ page?next }}
+        {{/ page?next }}
+    </div>
+</div>
+
+<section class="content full">
+    <div class="post">
+        <div class="post-content">
+            {{{ content }}}
+        </div>
+        <div class="clear"></div>
+    </div>
+
+    <div id="comments">
+        {{{ comments }}}
+    </div>
+</section>
+
+<!-- Begin Sidebar -->
+<aside class="sidebar">
+    <div class="sidebox widget">
+        <h3>Published</h3>
+
+        <div class="date"><span class="lite1">{{ page.date }}</span></div>
+
+    </div>
+
+    <div class="sidebox widget">
+        <h3>Categories</h3>
+        <ul class="list">
+            {{# page.categories?to_categories }}
+            {{> categories_list }}
+            {{/ page.categories?to_categories }}
+        </ul>
+    </div>
+
+    <div class="sidebox widget">
+        <h3>Tags</h3>
+        <ul class="list">
+            {{# page.tags?to_tags }}
+            {{> tags_list }}
+            {{/ page.tags?to_tags }}
+        </ul>
+    </div>
+
+</aside>
+<!-- End Sidebar -->

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{{ page.title }}</title>
+    {{# page.description }}
+    <meta name="description" content="{{ . }}">
+    {{/ page.description }}
+    <meta name="author" content="{{ site.author.name }}">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/raymond/stylesheets/raymond.css" type="text/css" rel="stylesheet" media="all">
+    <link rel="stylesheet" href="/assets/raymond/stylesheets/fontello.css">
+    <link href="/assets/raymond/widgets/google_prettify/stylesheets/twitter-bootstrap.css" type="text/css"
+          rel="stylesheet" media="all">
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/assets/raymond/media/favicon.png">
+    <link rel="apple-touch-icon" href="/assets/raymond/media/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/assets/raymond/media/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/assets/raymond/media/apple-touch-icon-114x114.png">
+</head>
+
+<body class="full-layout">
+
+<div class="body-wrapper">
+    <!-- Begin Top Wrapper -->
+    <div class="top-wrapper">
+        <div class="inner">
+            <!-- Begin Header -->
+            <header>
+                <div class="logo" style="position: relative">
+                    <a href="/"><img src="/assets/raymond/media/logo.png" alt=""/></a>
+                    <div style="position: absolute; top: 20px; left: 150px; width: 280px">
+                        <div>
+                        <span style="font-size: 40px; font-weight: bold; color: #616161">“</span>
+                        <span style="font-size: 16px; font-family: Georgia">Read the fucking source code !</span>
+                        <span style="font-size: 40px; font-weight: bold; color: #616161">”</span>
+                        </div>
+                        <br>
+                        <div style="float: right"><i>-- NYAN.CAT</i></div>
+                    </div>
+                </div>
+                <!-- Begin Menu -->
+                <nav id="menu" class="menu">
+                    <ul id="tiny">
+                        <li><a href="/">Home</a></li>
+                        {{# site.navigation?to_pages }}
+                        {{> pages_list }}
+                        {{/ site.navigation?to_pages }}
+                    </ul>
+                </nav>
+                <!-- End Menu -->
+                <div class="clear"></div>
+            </header>
+            <!-- End Header -->
+
+        </div>
+    </div>
+    <!-- End Top Wrapper -->
+    <!-- Begin Wrapper -->
+    <div class="wrapper">
+        <div class="inner light">
+            {{{ content }}}
+            <div class="clear"></div>
+        </div>
+    </div>
+    <!-- End Wrapper -->
+
+    <!-- Begin Footer Wrapper -->
+    <footer>
+        <!-- Begin Inner -->
+        <div class="inner">
+            <div class="one-third widget">
+                <h3 class="widget-title">常用链接</h3>
+                <ul class="post-list">
+                    <li>
+                        <h6><a href="http://site.douban.com/nuomihaochi/" target="_blank">我的豆瓣儿小站</a></h6>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="one-third widget">
+                <h3 class="widget-title">关于我</h3>
+
+                <p>喜欢瞎捣鼓软硬件，Coder，Golang 爱好者，热爱开源，Using Ubuntu from 6.04。爱好音乐，和吃货。</p>
+
+                <p></p>
+            </div>
+            <div class="one-third last widget">
+                <h3 class="widget-title">Get In Touch</h3>
+
+                <i class="icon-location contact"></i> Beijing, China <br/>
+                <i class="icon-s-rss contact"></i> <a href="http://weibo.com/xieran1988" target="_blank">@nareix</a><br/>
+                <i class="icon-mail contact"></i> <a href="mailto:enliest@qq.com">enliest@qq.com</a></div>
+                <i class="icon-s-github contact"></i> <a href="https://github.com/go-av">github.com/go-av</a></div>
+            <div class="clear"></div>
+        </div>
+        <!-- Begin Inner -->
+    </footer>
+    <!-- End Footer Wrapper -->
+
+    <!-- Begin Sub Footer Wrapper -->
+    <div class="subfooter">
+        <!-- Begin Inner -->
+        <div class="inner">
+            <p>&copy; {{ site.author.name }} 2013
+                build with <a>Golang</a> <a href="https://github.com/wendal/gor" target="_blank">Gor</a>
+
+            <ul class="social">
+                <li><a href="/rss.xml" target="_blank"><i class="icon-s-rss"></i></a></li>
+                <li><a href="https://github.com/go-av" target="_blank"><i class="icon-s-github"></i></a></li>
+                <li><a href="http://instagram.com/cfanfrank" target="_blank"><i class="icon-s-instagram"></i></a></li>
+            </ul>
+            <div class="clear"></div>
+        </div>
+        <!-- Begin Inner -->
+    </div>
+    <!-- End Sub Footer Wrapper -->
+</div>
+
+<script type="text/javascript">
+</script>
+
+
+<script src="/assets/raymond/javascripts/prettify.js"></script>
+<script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+        pres[i].className = "prettyprint ";
+    }
+    prettyPrint();
+</script>
+</body>
+</html>
