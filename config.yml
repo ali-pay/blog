@@ -9,6 +9,8 @@ posts:
   permalink: /:categories/:title/
   summary_lines: 20
   latest: 10
+  exclude: ^img
+
 
 pages:
   permalink: 'pretty'
