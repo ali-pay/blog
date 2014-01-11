@@ -6,6 +6,7 @@ categories:
 - linux
 tags:
 - linux kernel
+---
 
 # 蛋疼的问题
 
