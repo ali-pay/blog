@@ -1,6 +1,6 @@
 ---
 title: 内核模块编译的脏技巧
-date: '2014-1-12'
+date: '2014-01-12'
 description:
 categories:
 - linux
