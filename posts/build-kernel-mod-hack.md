@@ -61,7 +61,7 @@ relocatable 的意思就是，模块代码中调用内核 EXPORT_SYMBOL 的函�
 	
 再 make 自己的模块，大功告成。
 
-# 如果还不行
+# 调整 .config 文件
 
 拷贝一个正常的模块，和 make 出来的模块，用 readelf 看一下。
 
@@ -89,7 +89,17 @@ relocatable 的意思就是，模块代码中调用内核 EXPORT_SYMBOL 的函�
   	Size of program headers:           0 (bytes)
 	…
 
-如果错了的话，说明编译模块的时候给 gcc 的选项不同。方法是，在 arch/arm/configs 里面找到型号相近的板子。然后 make xxxx_defconfig。
+如果 ABI 不一致的话，函数调用的时候会出问题。
+说明编译模块的时候给 gcc 的选项不同。方法是，在 arch/arm/configs 里面找到型号相近的板子。然后 make xxxx_defconfig。
+
+更好的办法是从 `/proc/config.gz` 复制一份。
+
+	cp /proc/config.gz .
+	gunzip config.gz
+
+另外 CONFIG_MODVERSION 要设置为 n。
+
+如果某些配置不匹配的话，会导致诡异的问题。比如我就在调用 `__wake_up` 函数的时候，会因为 NULL Pointer 而导致 kernel panic。我跟踪了一下代码发现，`spin_lock_t` 这个结构体中，如果开启 spin_lock 的 debug，就会多几个字段。而目标内核没有这几个字段，就出错了。如果遇到问题，多跟踪下代码，观察下 `CONFIG_xx` 的宏有哪些不一样。
 
 # 测试
 
