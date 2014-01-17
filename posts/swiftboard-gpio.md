@@ -21,8 +21,9 @@ A10 芯片的管脚编号如下：
 
 PA0, PA1, PA2 ... PB0, PB1, PB2, .... PS0, PS1 ...
 
-在 swiftboard 的原理图 pdf 中搜索管脚值就可以找到对应管脚啦。我整理后如下：
+在 swiftboard 的原理图 pdf 中搜索管脚值就可以找到对应管脚。我整理后如下：
 
+![](/img/swiftboard-gpio/sch.png)
 
 修改 script.bin 文件
 -
@@ -183,12 +184,13 @@ A10 中的平台驱动已经预先设置好了 GPIO 专属的中断号，直接�
 
 参考代码
 -
-内核模块代码，提供读写寄存器的接口。
+内核模块代码（[github.com/go-av/a10/mmap-gpio-kern](http://github.com/go-av/a10/mmap-gpio-kern)）
+，提供读写寄存器的接口。
 	
 	mknod /dev/gpio c 232 0
 	insmod gpio.ko
 
-用户态代码。用 golang 编写的。
+用户态代码（[github.com/go-av/a10/mmap-gpio](http://github.com/go-av/a10/mmap-gpio)）。
 
 	# 编译
 	cd mmap-gpio
@@ -206,3 +208,7 @@ A10 中的平台驱动已经预先设置好了 GPIO 专属的中断号，直接�
 [A10 datasheet](http://linux-sunxi.org/A10)
 
 [A10 内核以及工具的开源代码](https://github.com/linux-sunxi)
+
+[Swiftboard 官方 Github，内有原理图，用户手册](https://github.com/swiftboard)
+
+
