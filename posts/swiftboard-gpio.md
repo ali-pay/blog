@@ -8,11 +8,6 @@ tags:
 - maker linux
 ---
 
-
-Swiftboard 是一块国产的 A10 芯片的 ARM 开发板。物美价廉。而 A10 芯片几乎是最便宜的 Cotrex-A8 1Ghz 芯片，性价比非常高。（200 块钱的电视棒都是这个方案）
-
-最重要的是，文档很齐全，内核开源。屌炸天！
-
 GPIO 就是直接操作管脚的高低电平，用最原始的方式驱动其他硬件。
 
 Swiftboard 的 GPIO 管脚对应
@@ -81,25 +76,26 @@ GPIO 寄存器
 寄存器通过物理地址访问，基地址是 0x01c20800。在 A10 的 datasheet 里面有详细描述。
 
 寄存器有四种：
+
 * CFG 寄存器，配置管脚用于输入或者输出。每个管脚占三个bit。
 
-![](/img/swiftboard-gpio/pa-cfg.jpg)
+	![](/img/swiftboard-gpio/pa-cfg.jpg)
 
 如图所示，如果要把 PA17 设置成输出。就要修改基地址 0x01c20800 + 0x08 往后的四个字节里的 [6:4] bit 为 001。
 
 * DAT 寄存器，读取设置管脚高低电平。每个管脚占一个bit。
 
-![](/img/swiftboard-gpio/pa-dat.jpg)
+	![](/img/swiftboard-gpio/pa-dat.jpg)
 
 * PUL 寄存器，设置上拉电阻或下拉电阻。每个管脚占两个bit。
 
-![](/img/swiftboard-gpio/pa-pul.jpg)
+	![](/img/swiftboard-gpio/pa-pul.jpg)
 
 01是上拉电阻，10是下拉电阻。
 
 * INT_CFG 寄存器，设置管脚的中断触发方式。
 
-![](/img/swiftboard-gpio/pa-int.jpg)
+	![](/img/swiftboard-gpio/pa-int.jpg)
 
 Positive Edge 为上升沿触发，即高电平转换到低电平的时候触发。Negative Edge 则相反。Low Level 和 High Level 我没试过。
 
@@ -107,11 +103,11 @@ Positive Edge 为上升沿触发，即高电平转换到低电平的时候触发
 
 * INT_CTL 寄存器，开启和关闭中断。
 
-![](/img/swiftboard-gpio/int-ctl.jpg)
+	![](/img/swiftboard-gpio/int-ctl.jpg)
 
 * INT_STATUS 寄存器，中断发生的时候对应的bit会变成 1，写入1清除中断位。
 
-![](/img/swiftboard-gpio/int-stat.jpg)
+	![](/img/swiftboard-gpio/int-stat.jpg)
 
 在内核模块访问寄存器
 -
@@ -184,13 +180,13 @@ A10 中的平台驱动已经预先设置好了 GPIO 专属的中断号，直接�
 
 参考代码
 -
-内核模块代码（[github.com/go-av/a10/mmap-gpio-kern](http://github.com/go-av/a10/mmap-gpio-kern)）
+内核模块代码（[github.com/go-av/a10/mmap-gpio-kern](http://github.com/go-av/a10/tree/master/mmap-gpio-kern)）
 ，提供读写寄存器的接口。
 	
 	mknod /dev/gpio c 232 0
 	insmod gpio.ko
 
-用户态代码（[github.com/go-av/a10/mmap-gpio](http://github.com/go-av/a10/mmap-gpio)）。
+用户态代码（[github.com/go-av/a10/mmap-gpio](http://github.com/go-av/a10/tree/master/mmap-gpio)）。
 
 	# 编译
 	cd mmap-gpio

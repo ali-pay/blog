@@ -2036,7 +2036,7 @@ ul.latest li .text p {
     display: block;
 }
 .post h2 {
-    margin: 0 0 3px 0;
+/*    margin: 3px 0 3px 0;*/
     font-size: 22px;
 }
 /*.post h2 a {
