@@ -16,10 +16,6 @@ A10 芯片的管脚编号如下：
 
 PA0, PA1, PA2 ... PB0, PB1, PB2, .... PS0, PS1 ...
 
-在 swiftboard 的原理图 pdf 中搜索管脚值就可以找到对应管脚。我整理后如下：
-
-![](/img/swiftboard-gpio/sch.png)
-
 修改 script.bin 文件
 -
 
