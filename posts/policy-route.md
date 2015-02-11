@@ -3,9 +3,10 @@ title: Linux 策略路由 & n2n 初探
 date: '2013-11-17'
 description:
 categories:
-- linux
+- Code
 tags:
-- linux
+- Linux
+- Network
 ---
 
 #### 背景

@@ -3,9 +3,10 @@ title: lua + libuv 的体验（续）
 date: '2014-11-28'
 description:
 categories:
-- lua
+- Code
 tags:
-- lua libuv
+- Lua
+- Libuv
 ---
 
 近期重构了代码，同时看了一下 libuv 的底层实现。发现了一些更好的结合方式。

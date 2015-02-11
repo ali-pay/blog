@@ -3,7 +3,7 @@ title: 用 Golang 通过 netlink 监听 udev 事件
 date: '2013-11-16'
 description:
 categories:
-- Golang
+- Code
 tags:
 - Golang
 ---

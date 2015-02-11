@@ -3,9 +3,9 @@ title: autossh 的正确用法
 date: '2014-11-03'
 description:
 categories:
-- linux
+- Code
 tags:
-- linux
+- autossh
 ---
 
 以前用 autossh 的时候，只是简单的用了一个 -N 参数。结果遇到一开始没联上网或者中途断网都还是起不到重连的作用。

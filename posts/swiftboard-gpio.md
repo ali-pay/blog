@@ -3,9 +3,10 @@ title: 玩转 Swiftboard：操作 GPIO
 date: '2014-01-14'
 description:
 categories:
-- maker
+- Code
 tags:
-- maker linux
+- Maker
+- Linux
 ---
 
 GPIO 就是直接操作管脚的高低电平，用最原始的方式驱动其他硬件。

@@ -3,9 +3,10 @@ title: Arduino 驱动 Nokia 5110 LCD 实战
 date: '2013-12-10'
 description:
 categories:
-- arduino
+- Code
 tags:
-- arduino
+- Arduino
+- Maker
 ---
 
 ![](/img/nokia-5110-brios.png)

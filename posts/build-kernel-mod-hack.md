@@ -3,9 +3,10 @@ title: 内核模块编译的脏技巧
 date: '2014-01-12'
 description:
 categories:
-- linux
+- Code
 tags:
-- linux kernel
+- Linux
+- Kernel
 ---
 
 # 蛋疼的问题

@@ -3,9 +3,9 @@ title: 关于在 Linux 下多个不相干的进程互斥访问同一片共享内
 date: '2014-11-04'
 description:
 categories:
-- linux
+- Code
 tags:
-- linux
+- Linux
 ---
 
 这里的“不相干”，定义为：

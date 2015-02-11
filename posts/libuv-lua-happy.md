@@ -3,9 +3,10 @@ title: lua + libuv 的体验
 date: '2014-11-01'
 description:
 categories:
-- lua
+- Code
 tags:
-- lua libuv
+- Lua 
+- Libuv
 ---
 
 libuv 是大名鼎鼎的 nodejs 的底层库。用 C 实现，代码量不大，但是五脏俱全。比起同类项目 libevent 我更喜欢它简洁的 API 接口。比 libevent 少了 httpserver 多了 subprocess 功能，封装得很棒，免去了传统的 fork 和 pipe 的不直观的做法。
