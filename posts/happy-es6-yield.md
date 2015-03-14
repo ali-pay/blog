@@ -87,7 +87,7 @@ function operation() {
 }
 ```
 
-我想问下谁看的明白这些的是啥子？
+谁看的明白这是啥子？
 
 另外代码里面有循环的话，Promise 就很难办了。比如 Stackoverflow 上的 [这个问题](http://stackoverflow.com/questions/17217736/while-loop-with-promises)，几个答案给出的写法都是差强人意的。比如这个：
 
@@ -169,13 +169,9 @@ function operation() {
 }
 ```
 
-co 的核心就是：
+co 的核心就是两个：
 
 - 在 `function *` 里面 yield Promise
-	- haha
-	- yes
-		- haha
-- hhac
 - 把 `function *` 包装成 Promise 返回
 
 短小精干易用。
