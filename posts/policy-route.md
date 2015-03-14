@@ -9,7 +9,7 @@ tags:
 - Network
 ---
 
-#### 背景
+# 背景
 
 这几天，我玩战地4的时候发现，经常走到“登入中”那一步的时候，提示“无法连接到 EA 服务器”。
 
@@ -25,7 +25,7 @@ tags:
 总之这激发了我折腾的欲望，为了让大家能透明的加速。所以我想了一个方法：从 TP-Link 路由器里面把特别慢的 IP 路由到 192.168.1.90，一台内网跑 Linux 的笔记本。然后在 192.168.1.90 上面让流量通过隧道到 Linode VPS 上面。
 
 
-#### Step0：结构
+# Step0：结构
 
 结构如下：
 
@@ -35,13 +35,13 @@ tags:
 
 ![](/img/policy-route-4.png)
 
-#### Step1：设置 TPLink 路由器
+# Step1：设置 TPLink 路由器
 
 ![](/img/policy-route-2.png)
 
 把这几个速度比较慢的ip地址填上，这样包就全部到 192.168.1.90 了。
 
-#### Step2：配置 n2n 隧道
+# Step2：配置 n2n 隧道
 
 介绍一个神器 [n2n](http://www.ntop.org/products/n2n/)。它有 VPN 的作用。但是配置比 OpenVPN 轻松太多。它的功能如图所示：
 
@@ -68,7 +68,7 @@ n2n 在 ubuntu 下面可以很轻松的安装。
 
 这时候分别看一下 VPS 和 192.168.1.90 下 edge0 的 IP 地址，分别为 10.0.0.2 和 10.0.0.1。然后互 ping 一下，验证联通。
 
-#### Step3：在 192.168.1.90 配置策略路由和 SNAT
+# Step3：在 192.168.1.90 配置策略路由和 SNAT
 
 先说说策略路由这个神器！
 
@@ -130,7 +130,7 @@ NAT 的作用，就是建立（源地址，源端口，目的地址）三元组�
 
 	iptables -t nat -A POSTROUTING -j SNAT --to 10.0.0.1 -o edge0
 
-#### Step4：在 VPS 配置 NAT
+# Step4：在 VPS 配置 NAT
 
 在 VPS 上，执行下面的命令
 
@@ -141,7 +141,7 @@ NAT 的作用，就是建立（源地址，源端口，目的地址）三元组�
 
 everything DONE！
 
-#### 测试
+# 测试
 
 从 VPS ping 日本战地服务器
 
@@ -165,7 +165,7 @@ everything DONE！
 ![](/img/policy-route-test.png)
 
 
-#### 参考资料
+# 参考资料
 
 [深入理解linux网络技术内幕: 第三十五章 路由](http://www.oreilly.com.cn/index.php?func=book&isbn=978-7-5083-7964-7)
 

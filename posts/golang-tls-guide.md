@@ -8,13 +8,13 @@ tags:
 - Golang
 ---
 
-#### TLS 的作用
+# TLS 的作用
 
 用于加密传输。但相对于自己实现的简单的加密传输，TLS 有握手协议，有验证证书的协议。并且支持多个证书，很方便。
 
 网上关于 Golang TLS 库的说明极少，官方文档讲得也比较含糊。
 
-#### 数字证书的背景知识
+# 数字证书的背景知识
 
 简单的说，证书就是公钥，另外还包含我的身份信息，来证明“这是我的公钥”。问题是，你这么说，谁会相信你呢？
 
@@ -28,7 +28,7 @@ tags:
 
 所以这个时候，就要自己给自己建立一个“权威组织”，叫做“自签名”。权威组织用的证书，叫做“根证书”。
 
-#### 创建根证书（ca.pem, ca.key）
+# 创建根证书（ca.pem, ca.key）
 
 	ca := &x509.Certificate{
 		SerialNumber: big.NewInt(1653),
@@ -74,7 +74,7 @@ x509.MarshalPKCS1PrivateKey 函数可以把 rsa 私钥写到文件中。
 
 经测试，代码中 x509.Certificate 里面的项是必填的，不然就出问题了。
 
-#### 创建我的证书（cert2.pem, cert2.key）
+# 创建我的证书（cert2.pem, cert2.key）
 
 	cert2 := &x509.Certificate{
 		SerialNumber: big.NewInt(1658),
@@ -108,11 +108,11 @@ x509.MarshalPKCS1PrivateKey 函数可以把 rsa 私钥写到文件中。
 
 注意 x509.CreateCertificate 的参数。
 
-#### 证书格式的说明
+# 证书格式的说明
 
 在浏览器中选择 https/ssl 证书管理。然后选择导出，可以看到两种类型的证书：
 
-#### Base64 编码 X509 
+# Base64 编码 X509 
 
 这种类型的证书格式如下。
 
@@ -143,11 +143,11 @@ x509.MarshalPKCS1PrivateKey 函数可以把 rsa 私钥写到文件中。
 
 也可以调用 tls.LoadX509KeyPair 来加载。
 
-##### Der 编码 X509
+## Der 编码 X509
 
 这种编码可以直接读取然后用 x509.ParseCertificate 来解码。
 
-#### 服务端监听
+# 服务端监听
 
 	ca_b, _ := ioutil.ReadFile("ca.pem")
 	ca, _ := x509.ParseCertificate(ca_b)
@@ -206,7 +206,7 @@ tls.Config 中 ClientAuth 的选项有
 
 ClientCAs 参数是服务端拥有的“权威组织”的列表。
 
-#### 客户端连接
+# 客户端连接
 
 	cert2_b, _ := ioutil.ReadFile("cert2.pem")
 	priv2_b, _ := ioutil.ReadFile("cert2.key")
@@ -239,7 +239,7 @@ ClientCAs 参数是服务端拥有的“权威组织”的列表。
 
 其中 tls.Config 的 InsecureSkipVerify 参数的意思是：客户端不验证服务端的证书。
 
-#### 获取对端证书
+# 获取对端证书
 
 	tlscon, ok := conn.(*tls.Conn)
 	if ok {
@@ -255,7 +255,7 @@ ClientCAs 参数是服务端拥有的“权威组织”的列表。
 
 完整代码在 [这里](https://github.com/go-av/tls-example)
 
-#### 参考资料
+# 参考资料
 
 [Golang tls](golang.org/pkg/crypto/tls)
 
