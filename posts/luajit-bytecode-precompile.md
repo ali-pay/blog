@@ -2,6 +2,7 @@
 title: 使用 Luajit 将 lua 源文件预编译为 bytecode
 date: '2015-03-18'
 description:
+permalink: '/luajit-precompile-bytecode'
 categories:
 - Code
 tags:

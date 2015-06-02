@@ -203,3 +203,8 @@ co 的核心就是两个：
 
 终归我也不排斥 Javascript，毕竟 n 多前后端的库在那儿摆着，npm 上的资源比 luajit 多太多了。
 
+# 关于正确的 API 设计
+
+在自己设计的协议中，封装了一个 Socket。其 Read / Write 的接口都是 Promise。如果读取或者写入失败，则 reject，否则 fulfill。
+我自己也不清楚这是否为好的方式，但用起来比单纯的 callback 好了很多。
+
