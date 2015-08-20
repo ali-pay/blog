@@ -1,16 +1,15 @@
-title : 谢特
+title : nareix
 tagline: Blog Tagline
 author :
-  name : 谢特
+  name : nareix
   email : hi.nareix@gmail.com
   github : nareix
   twitter : nareix
   feedburner : feedname
 
 navigation :
+  - projects.html
   - archive.html
   - tags.html
-  - categories.html
-  - pages.html
   - about.md
   
