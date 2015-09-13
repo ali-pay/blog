@@ -1,6 +1,6 @@
 ---
 title: 关于异步
-date: '2015-03-12'
+date: 2015-09-11
 description:
 permalink: '/about-async'
 categories:
@@ -9,9 +9,11 @@ tags:
 - DesignPattern
 ---
 
-开始折腾的原因是某个智能硬件项目，CPU 是低功耗的 MIPS，将来换了低成本方案后 CPU 可能降为 300-500Mhz，内存可能降为 32M，在这上面上跑 node.js / Python 那是相当勉强的，Golang 官方不支持 MIPS 的交叉编译也不大想用，C++ 也不大会使。最终决定用 lua + libuv 照着 node.js 撸了一个小框架，同时用 node.js 完成服务端。
+去年，在做一个智能硬件项目，CPU 是低功耗的 MIPS，将来换了低成本方案后 CPU 可能降为 300-500Mhz，内存可能降为 32M。
 
-这是一个坑爹的开始。
+这个条件限制很大，最终决定用 lua + libuv 照着 node.js 撸了一个小框架（做了一半才知道有 luvit），同时用 node.js 完成服务端。
+
+这是一个折腾的开始，这种单线程异步模型有优点也有缺点。
 
 # LV0: Callback hell
 
@@ -30,7 +32,7 @@ openFile(xx, function () {
 
 这个是 node.js 的最大问题，写 50 行以下的代码可能没啥感觉，业务逻辑复杂就坑爹了。
 
-Express.js 的作者 TJ（同是 co 的作者）也表示这货有时候会 callback 两次或者压根没有 callback，哥不干了，哥玩 Golang 去了。
+Express.js 的作者 TJ（同是 co 的作者）也表示 node.js 有时候会 callback 两次或者压根没有 callback，哥不干了，哥玩 Golang 去了。
 
 node.js 社区也有很多人讨论过了，比较好的解决办法是 Promise。
 
@@ -204,7 +206,7 @@ co 的核心就是两个：
 
 很多 node.js 的库默认返回的都是 Promise，可以直接被 co 使用。
 
-ES7 的 async/await 等于把 `co.wrap(function *)` 和 `yield` 替换成 `async` 和 `await`，本质还是一样的。
+ES7 的 `async/await` 等于把 `co.wrap(function *)` 和 `yield` 替换成 `async` 和 `await`，本质还是一样的。
 
 可惜这种方式也是有缺点的：实际写代码的时候，经常会忘记写 `await/yield`，漏写一个就坑爹了，同步变异步了，返回类型变成 Promise 了，后续全乱了。我觉得这不怪我，毕竟人的思路是**同步**的，90% 的业务逻辑的也是**同步**的。
 
@@ -251,9 +253,11 @@ while(true)
   coroutine.sleep(1000);
 ```
 
-除了脚本以外 C 也是可以的。保存寄存器状态切换堆栈即可，和 OS 调度时候切换进程一个做法，glibc 已经有了封装好的 makecontext/swapcontext，纯用户态的。
+其实 fibjs 挺牛逼的，benchmark 已经超过 node.js 数倍了，可惜由于生态问题很多人不敢用。
 
-libtask 是 Golang 的作者之一设计的 C coroutine 库，在 C 中实现了 gevent 类似的效果，基于  makecontext/swapcontext。
+除了脚本以外 C 也是可以的。保存寄存器状态切换堆栈即可，和 OS 调度时候切换进程一个做法，glibc 已经有了封装好的 `makecontext/swapcontext`，纯用户态的。
+
+libtask 是 Golang 的作者之一设计的 C coroutine 库，在 C 中实现了 gevent 类似的效果，基于  `makecontext/swapcontext`。
 
 还有一个企鹅开源的 libco 库，也是类似的思路，还支持 hook read/write syscall 把它们改变成异步模式。
 
@@ -263,7 +267,7 @@ libtask 是 Golang 的作者之一设计的 C coroutine 库，在 C 中实现了
 
 关键就是如何把 lua 中的 coroutine 和 C 中的 coroutine 比较好的融合在一起。现有的方案是：
 
-- lua 5.2 开始支持的 lua_callk，云风大大的 [这篇文章](http://blog.codingnow.com/2012/06/continuation_in_lua_52.html) 有详细描述。大体就是让你能在 C 中 lua_call 完 lua 后然后又在 lua 中被 yield 后再 resume 的时候能返回 lua_call 后的位置继续
+- lua 5.2 开始支持的 `lua_callk`，云风大大的 [这篇文章](http://blog.codingnow.com/2012/06/continuation_in_lua_52.html) 有详细描述。大体就是让你能在 C 中 lua_call 完 lua 后然后又在 lua 中被 yield 后再 resume 的时候能返回 lua_call 后的位置继续
 - Coro，那篇文章里也有讲。给每个 lua 的 coroutine 分配了 C stack，彻底解决了在 C 里面 yield 的问题
 
 但我觉得这两种方式都有点问题：
@@ -297,15 +301,18 @@ coStart(loop1); // makecontext(); swapcontext();
 
 ``` C
 // in C
-int readAndCalc() {
+int readAndCalc(char (*cb)(int i)) {
 	char a, b, c;
 	ioRead(stdin, &a, sizeof(a));
 	ioRead(stdin, &b, sizeof(b));
-	ioRead(stdin, &c, sizeof(c));
+  	c = cb();
 	return a+b+c;
 }
 // in Lua
-local ret = ffi.C.readAndCalc()
+local ret = ffi.C.readAndCalc(function ()
+  co.sleep(1)
+  return 42
+end)
 print('sum=', ret)
 ```
 
@@ -315,30 +322,28 @@ print('sum=', ret)
 
 从 lua 到 C 的过程是：
 
-- 在 ffi.C 调用 fn 的时候 makecontext(fn) 然后 swapcontext 进入 fn，等它再 swapcontext 回来的时候返回 lua， 这一步是非阻塞的
+- 在 ffi.C 调用 fn 的时候 `makecontext(fn)` 然后 `swapcontext` 进入 fn，等它再 `swapcontext` 回来的时候返回 lua， 这一步是非阻塞的
 - 返回 lua 中就立即 `coroutine.yield()` 等待 fn 结束
 - 然后 fn 在 libuv 中各种 IO：这一步和 lua 没有任何关系
 - fn 结束的时候，在 lua 中 `coroutine.resume()` 刚刚 fn 的返回值
 
-其中 makecontext 的 C stack 可以重用，而且只有调用了 C 而且在里面 yield 了的 lua coroutine 才给分配 C stack。
+其中 `makecontext` 的 C stack 可以重用，而且只有调用了 C 而且在里面 yield 了的 lua coroutine 才给分配 C stack。
 
-这种方式比起原生的 ffi.C 调用，多了在 C 和 luajit 中各两次 context switch 的开销，如果只是单纯调用 libuv 的某个函数，C 的切换可以省掉；如果 C 中没有 yield，lua 的切换可以省掉。
+这种方式比起原生的 ffi.C 调用，多了在 C 和 luajit 中各两次 context switch 的开销，如果只是单纯调用 libuv 的某个函数，C 的切换可以省掉；如果 C 中没有 yield，lua 的切换可以省掉
 
-从 C 到 lua 的过程是：
-
-- 在 C 中 callback lua（用 ffi.cb 机制）的时候，如果在 callback 中有 `coroutine.yield`  操作，则会导致 `attempt to yield across C-call boundary` 错误。
-
-为了绕过它，必须等 ffi 调用完成后再 callback。解决办法是：
+从 C callback 到 lua 的过程比较复杂。luajit 的做法大概是实时生成一个 callback 函数的 machine code，内容是把 C 的参数转换成 lua 的 push 到栈上，再 call。如果在 callback 中有 `coroutine.yield`  操作，会导致 `attempt to yield across C-call boundary` 错误。如果要绕过它，必须等 ffi 调用完成后再 callback。如果要绕过这个限制，解决办法是：
 
 - ffi.C 调用的时候把 cb 替换成 fakeCb
-- fakeCb 在被调用的时候保存参数并立即 yield，在 next tick 里把 cb 和参数 `coroutine.resume()` 传给等待着的 lua coroutine，然后原 cb 在 lua 里被调用
-- 需要修改 luajit 的代码
+- fakeCb 在被调用的时候先 yield。在 next tick 里把 cb 和参数 `coroutine.resume()` 传给等待着的 lua coroutine，然后原 cb 在 lua 里被调用
 
-这样一来 C 和 lua 之间的互相调用就没有任何限制了。带来的开销就是多次 context switch，两个开销都有人 benchmark 过。
+需要修改 luajit 的代码，暂时没法支持。
 
-makecontext/swapcontext 的开销是 [每秒百万次的级别](http://1234n.com/?post/aukxju)。另外 [这篇文章](http://rethinkdb.com/blog/making-coroutines-fast/) 表明 glibc 自带的函数调用了 syscall `sigprocmask()`，这个完全没必要而且显著拉低性能，省掉以后目测性能提高几倍。
+另外 luajit 和 C 里 context switch 的开销都有人测过：
+
+`makecontext/swapcontext` 的开销是 [每秒百万次的级别](http://1234n.com/?post/aukxju)。另外 [这篇文章](http://rethinkdb.com/blog/making-coroutines-fast/) 表明 glibc 自带的 `swapcontext` 过程中调用了 syscall `sigprocmask()`，这个完全没必要，显著拉低性能，省掉以后目测性能提高几倍。
 
 luajit 的性能相当感人，[每秒能到千万级](http://www.blogjava.net/killme2008/archive/2010/03/02/314264.html)（而且这篇文章中的测试机比上一篇还慢点）。
 
 不负责任的猜测，C context switch 的速度或许比不上 luajit，保存一堆寄存器和浮点处理器状态的速度比不上 luajit 可能只改几个指针，也许直接在 luajit 里面 IO 会比在 C 里快。但这个库的意义肯定不光是为了效率，单论效率 libuv 这种纯 callback 肯定是最快的，运行效率和开发效率之间是需要折衷的。
 
+LCL 正在努力开发中。
