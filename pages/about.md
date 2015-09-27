@@ -10,16 +10,7 @@ description:
 <p>关注独立游戏和 GameJAM</p>
 <p>喜欢轻松和治愈的番，Key 社的番，还有银魂</p>
 <p>业余电吉他和效果器玩家。曾经大爱 Pink Floyd 和 Joy Division</p>
-<p>有神论者，无政府主义，反 GCD</p>
-
-<hr style="margin-bottom: 20px">
-
-<h2>经历</h2>
-<p>2014-2015 | 米唐科技/Sugr/智能音箱/CTO: iOS/node.js/luajit/C/libuv</p>
-<p>2013-2014 | GapYear: 稻城/林芝/拉萨/青海湖/西宁/兰州/西安/宁夏/内蒙</p>
-<p>2010-2011 | 网易邮箱: Perl/Python</p>
-<p>2009-2009 | 百度系统部: LinuxKernel</p>
-<p>2006-2013 | 华南理工大学: Xen/QEMU/LinuxKernel</p>
+<p>无政府主义，反 GCD</p>
 
 <hr style="margin-bottom: 20px">
 

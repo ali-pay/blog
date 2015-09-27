@@ -1,5 +1,5 @@
 ---
-title: 关于异步
+title: 异步进化论
 date: 2015-09-11
 description:
 permalink: '/about-async'
@@ -11,7 +11,7 @@ tags:
 
 去年，在做一个智能硬件项目，CPU 是低功耗的 MIPS，将来换了低成本方案后 CPU 可能降为 300-500Mhz，内存可能降为 32M。
 
-这个条件限制很大，最终决定用 lua + libuv 照着 node.js 撸了一个小框架（做了一半才知道有 luvit），同时用 node.js 完成服务端。
+这个条件限制很大，最终决定用 lua + libuv 照着 node.js 搞了一个小框架，同时用 node.js 完成服务端。
 
 这是一个折腾的开始，这种单线程异步模型有优点也有缺点。
 
@@ -32,7 +32,7 @@ openFile(xx, function () {
 
 这个是 node.js 的最大问题，写 50 行以下的代码可能没啥感觉，业务逻辑复杂就坑爹了。
 
-Express.js 的作者 TJ（同是 co 的作者）也表示 node.js 有时候会 callback 两次或者压根没有 callback，哥不干了，哥玩 Golang 去了。
+Express.js 的作者 TJ（同是 co 的作者）也表示 node.js 有时候会 callback 两次或者压根没有 callback。
 
 node.js 社区也有很多人讨论过了，比较好的解决办法是 Promise。
 
@@ -224,7 +224,7 @@ node.js 有个根本限制就是 `yield` 只能放在 `function *` 里面，这�
 
 而 Python 的 `yield` 没这个问题，lua 的 coroutine 也没有。
 
-所以 Python 的 gevent 实现了挺好的设计，完全摆脱了 Promise，代码能按照同步的方式写，和日常使用 Python 的姿势没什么区别，而同时具备异步的好处：
+所以 Python 的 [gevent](http://www.gevent.org/) 实现了挺好的设计，完全摆脱了 Promise，代码能按照同步的方式写，和日常使用 Python 的姿势没什么区别，而同时具备异步的好处：
 
 ``` python
 address = ('localhost', 9000)
@@ -237,7 +237,7 @@ data, address = sock.recvfrom(8192)
 print('%s:%s: got %r' % (address + (data, )))
 ```
 
-fibjs 通过重新封装 v8 也达到了同样的目的：
+[fibjs](http://fibjs.org/) 通过重新封装 v8 也达到了同样的目的：
 
 ``` js
 var coroutine = require("coroutine");
@@ -253,11 +253,13 @@ while(true)
   coroutine.sleep(1000);
 ```
 
-其实 fibjs 挺牛逼的，benchmark 已经超过 node.js 数倍了，可惜由于生态问题很多人不敢用。
+其实 fibjs 挺牛逼的，benchmark 已经超过 node.js 数倍了，可惜由于生态问题大多数人不敢用。
 
-除了脚本以外 C 也是可以的。保存寄存器状态切换堆栈即可，和 OS 调度时候切换进程一个做法，glibc 已经有了封装好的 `makecontext/swapcontext`，纯用户态的。
+另外还有一个库 [luvit](https://luvit.io/docs.html)，但它只是一味的照搬 node.js 的 API，没有充分利用 lua coroutine。
 
-libtask 是 Golang 的作者之一设计的 C coroutine 库，在 C 中实现了 gevent 类似的效果，基于  `makecontext/swapcontext`。
+除了脚本以外 C 也是可以的。保存寄存器状态切换堆栈即可，和 OS 调度时候切换进程一个做法，glibc 已经有了封装好的 `makecontext/swapcontext`，纯用户态的，Windows 下叫做 Fiber。
+
+[libtask](https://swtch.com/libtask/) 是 Golang 的作者之一设计的 C coroutine 库，在 C 中实现了 gevent 类似的效果，基于  `makecontext/swapcontext`。
 
 还有一个企鹅开源的 libco 库，也是类似的思路，还支持 hook read/write syscall 把它们改变成异步模式。
 
@@ -268,7 +270,7 @@ libtask 是 Golang 的作者之一设计的 C coroutine 库，在 C 中实现了
 关键就是如何把 lua 中的 coroutine 和 C 中的 coroutine 比较好的融合在一起。现有的方案是：
 
 - lua 5.2 开始支持的 `lua_callk`，云风大大的 [这篇文章](http://blog.codingnow.com/2012/06/continuation_in_lua_52.html) 有详细描述。大体就是让你能在 C 中 lua_call 完 lua 后然后又在 lua 中被 yield 后再 resume 的时候能返回 lua_call 后的位置继续
-- Coro，那篇文章里也有讲。给每个 lua 的 coroutine 分配了 C stack，彻底解决了在 C 里面 yield 的问题
+- [Coco](http://coco.luajit.org/api.html)，那篇文章里也有讲。给每个 lua 的 coroutine 分配了 C stack，彻底解决了在 C 里面 yield 的问题
 
 但我觉得这两种方式都有点问题：
 
@@ -318,7 +320,6 @@ print('sum=', ret)
 
 - 实现 chan / worker / select：worker 类似 [WebWoker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers) 有独立的 OS thread，chan 模仿 Golang，是跨 worker 通信的唯一方式
 - 尽量不改动 luajit 代码
-- 名字缩写为 LCL（就是 EVA 里的 LCL！
 
 从 lua 到 C 的过程是：
 
@@ -346,4 +347,4 @@ luajit 的性能相当感人，[每秒能到千万级](http://www.blogjava.net/k
 
 不负责任的猜测，C context switch 的速度或许比不上 luajit，保存一堆寄存器和浮点处理器状态的速度比不上 luajit 可能只改几个指针，也许直接在 luajit 里面 IO 会比在 C 里快。但这个库的意义肯定不光是为了效率，单论效率 libuv 这种纯 callback 肯定是最快的，运行效率和开发效率之间是需要折衷的。
 
-LCL 正在努力开发中。
+LCL 正在努力开发中。目前在如何修改 luajit 代码上遇到了很大困难。
