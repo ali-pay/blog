@@ -2,7 +2,6 @@
 title: 异步进化论
 date: 2015-09-11
 description:
-permalink: '/about-async'
 categories:
 - Code
 tags:
@@ -277,9 +276,9 @@ while(true)
 - lua_callk 并不是真正的 coroutine，适用范围有限，无法支持在 C 里面 lua_yield 不立即返回这种情况
 - Coro 解决得彻底，但理论上并非每一个 lua coroutine 都需要 C stack，因为不是每个 coroutine 都会在 C 里面 yield。另外 C 里面的频繁 IO 操作最好不要每次都到 lua 里 yield 一圈再回来
 
-最终，在被坑成爹之后，我想做一个更好的库：
+最终，我想做一个更好的库：
 
-# LCL (Lightweight Concurrency Library)
+# LVUP: LCL (Lightweight Concurrency Library)
 
 大概的设计如下：
 
@@ -348,3 +347,9 @@ luajit 的性能相当感人，[每秒能到千万级](http://www.blogjava.net/k
 不负责任的猜测，C context switch 的速度或许比不上 luajit，保存一堆寄存器和浮点处理器状态的速度比不上 luajit 可能只改几个指针，也许直接在 luajit 里面 IO 会比在 C 里快。但这个库的意义肯定不光是为了效率，单论效率 libuv 这种纯 callback 肯定是最快的，运行效率和开发效率之间是需要折衷的。
 
 LCL 正在努力开发中。目前在如何修改 luajit 代码上遇到了很大困难。
+
+更新 10.4:
+
+向 luajit 邮件列表问了个问题：在 lua ->C 的代码中使用 swapcontext() 会不会导致 tracing jit 出问题。
+
+他们的回答是：普通调用没问题，在 lua -> C 的时候 jit 会停止工作，但是 ffi 调用不行。
